@@ -1,9 +1,11 @@
 import os
-import sqlalchemy as db
 import utils.user as userdb
+import sqlalchemy as db
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import MultipleResultsFound
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -13,10 +15,11 @@ DB_DATABASE = os.getenv('DATABASE')
 DB_HOST = os.getenv('HOST')
 
 address = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DATABASE}"
-engine = db.create_engine(address, echo=True)
+engine = db.create_engine(address)
 connection = engine.connect()
-metadata = db.MetaData()
+metadata = db.MetaData()    # Used for representing a Table
 
+# Creates a new session to the database based on the described engine
 Session = sessionmaker(bind=engine)
 
 
@@ -31,12 +34,14 @@ class User(Base):
     experience = db.Column(db.Integer)
     message_count = db.Column(db.Integer)
 
+    # Lets us print out a User object nicely
     def __repr__(self):
         text = ("<User(name='{self.name}', discord_id='{self.discord_id}',"
             "level='{self.level}', experience='{self.experience}',"
             "message_count='{self.message_count}')")
         return text
 
+# Create the table
 Base.metadata.create_all(engine)
 
 
@@ -62,12 +67,35 @@ def add_user(id, name, lvl, exp, msg_count):
         f"{id}:{name} wasn't added because their discord_id " 
         "already exists in the database!"
     )
-    return
 
 
-def update_user(id, name, lvl, exp, msg_count):
+def update_user(id: str, name: str = None, lvl: int = None,
+                exp: int = None, msg_count: int = None):
+    '''
+    Updates user data in the database.
+    '''
+    session = Session()
+    if user_exists(id):
+        try:
+            user = session.query(User).filter(User.discord_id == id).scalar()
+        except MultipleResultsFound:
+            print(
+                "Duplicate discord_id's were found! Please check the database."
+            )
+        else:
+            parameters = [name, lvl, exp, msg_count]
+            # Column header names of the User table
+            col_names = ["name" , "level", "experience", "message_count"]
+            for var, col in zip(parameters, col_names):
+                if var is not None:
+                    setattr(user, col, var)
+                    session.commit()
+                    print(f"The {col} of user: {id} has been updated to {var}.")
+        return
+    print("User was not found.")
+
+def delete_user():
     pass
-
 
 def user_exists(id):
     '''
@@ -76,9 +104,33 @@ def user_exists(id):
     '''
     session = Session()
     # Queries just the discord_ids, not the entire object
-    query = session.query(User.discord_id).filter(
+    try:
+        query = session.query(User.discord_id).filter(
         User.discord_id == id).scalar() is not None
-    return query
+    except MultipleResultsFound:
+        print("Duplicate discord_id's were found! Please check the database.")
+    else:
+        return query
+
+def get_user():
+    '''
+    Retrieves data about a user.
+    '''
+    if user_exists:
+        query = session.query(User.discord_id).filter(
+            User.discord_id == id).scalar()
+    print("User was not found.")
+
+def get_all_users():
+    '''
+    Returns an array of tuples with every user's data.
+    '''
+    user_table = db.Table(
+        'users', metadata, autoload=True, autoload_with=engine)
+    query = db.select([user_table])
+    results = connection.execute(query)
+    result_set = results.fetchall()
+    return result_set
 
 def get_user_count():
     '''
@@ -87,13 +139,8 @@ def get_user_count():
     session = Session()
     return session.query(User).count()
 
-def get_all_users():
+def check_duplicates():
     '''
-    Returns an array of tuples with user data.
+    Check database for duplicate discord_id's
     '''
-    user_table = db.Table(
-        'users', metadata, autoload=True, autoload_with=engine)
-    query = db.select([user_table])
-    results = connection.execute(query)
-    result_set = results.fetchall()
-    return result_set
+    pass
