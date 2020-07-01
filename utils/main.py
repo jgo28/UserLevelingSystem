@@ -86,6 +86,7 @@ def update_user(id: str, name: str = None, lvl: int = None,
             parameters = [name, lvl, exp, msg_count]
             # Column header names of the User table
             col_names = ["name" , "level", "experience", "message_count"]
+            # Updates the parameters that were specified to the database
             for var, col in zip(parameters, col_names):
                 if var is not None:
                     setattr(user, col, var)
@@ -112,13 +113,15 @@ def user_exists(id):
     else:
         return query
 
-def get_user():
+def get_user(id):
     '''
-    Retrieves data about a user.
+    Retrieves data about a user. Returns a User object.
     '''
-    if user_exists:
-        query = session.query(User.discord_id).filter(
+    session = Session()
+    if user_exists(id):
+        user = session.query(User).filter(
             User.discord_id == id).scalar()
+        return user
     print("User was not found.")
 
 def get_all_users():
