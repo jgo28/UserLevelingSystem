@@ -44,10 +44,9 @@ def add_user(id, name, lvl, exp, msg_count):
     '''
     Adds a new user to the database.
     '''
-    # Create a session to add users
     session = Session()
     if not user_exists(id):   
-        # Add a user
+        # If discord_id doesn't exist, add the user
         new_user = User(
             discord_id=id,
             name=name,
@@ -59,8 +58,15 @@ def add_user(id, name, lvl, exp, msg_count):
         session.commit()
         print(f"{id}:{name} has been added to the database.")
         return
-    print(f"{id}:{name} already exists in the database!")
+    print(
+        f"{id}:{name} wasn't added because their discord_id " 
+        "already exists in the database!"
+    )
     return
+
+
+def update_user(id, name, lvl, exp, msg_count):
+    pass
 
 
 def user_exists(id):
@@ -69,20 +75,25 @@ def user_exists(id):
     Returns true if user exists. Returns false if user does not exist.
     '''
     session = Session()
-    query = session.query(User.discord_id).filter_by(name=id).scalar()
-    if query is not None:
-        return True
-    return False
+    # Queries just the discord_ids, not the entire object
+    query = session.query(User.discord_id).filter(
+        User.discord_id == id).scalar() is not None
+    return query
 
+def get_user_count():
+    '''
+    Returns the total number of users in the database.
+    '''
+    session = Session()
+    return session.query(User).count()
 
-def all_users():
-    user_table = db.Table('users', metadata, autoload=True, autoload_with=engine)
+def get_all_users():
+    '''
+    Returns an array of tuples with user data.
+    '''
+    user_table = db.Table(
+        'users', metadata, autoload=True, autoload_with=engine)
     query = db.select([user_table])
     results = connection.execute(query)
     result_set = results.fetchall()
-    print(result_set)
-
-
-# add_user("jake", "921010", 0, 0, 0)
-print(user_exists("921010"))
-# all_users()
+    return result_set
