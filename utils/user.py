@@ -15,14 +15,14 @@ class UserInfo:
 
     def get_level(self):
         return self.level
-    
+
     def get_exp(self):
         return self.exp
 
     def get_msg_count(self):
         return self.msg_count
 
-    def set_username(self, name)
+    def set_username(self, name):
         self.user = name
 
     def set_discord_id(self, id):
@@ -34,9 +34,8 @@ class UserInfo:
     def set_exp(self, exp):
         self.exp = exp
 
-    def set_msg_count(self, msgs)
+    def set_msg_count(self, msgs):
         self.msg_count = msgs
 
     def calc_exp(self):
         pass
-

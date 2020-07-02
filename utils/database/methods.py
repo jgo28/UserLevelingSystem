@@ -1,10 +1,13 @@
-import os
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 from utils.database.models import Users
+from sqlalchemy.orm.exc import MultipleResultsFound
 
 
 class Methods:
+    '''
+    Functions that manipulate the Users database.
+    '''
     def __init__(self, engine, metadata, connection):
         self.engine = engine
         self.metadata = metadata
@@ -86,7 +89,7 @@ class Methods:
 
     def user_exists(self, id):
         '''
-        Checks to see if a user exists in the database baed on their discord_id.
+        Checks to see if a user exists based on their discord_id.
         Returns true if user exists. Returns false if user does not exist.
         '''
         session = self.session()

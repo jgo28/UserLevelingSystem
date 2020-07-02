@@ -1,8 +1,5 @@
 import os
 import sqlalchemy as sqla
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.exc import MultipleResultsFound
 from dotenv import load_dotenv
 from utils.database.models import Base
 
@@ -24,8 +21,10 @@ Base.metadata.create_all(engine)
 def get_metadata():
     return metadata
 
+
 def get_engine():
     return engine
-    
+
+
 def get_connection():
     return connection

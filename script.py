@@ -1,5 +1,4 @@
 import utils.database.methods as methods
-import utils.database.models as model
 import utils.database.config as i
 
 metadata = i.get_metadata()
