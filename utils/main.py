@@ -34,7 +34,7 @@ class User(Base):
     experience = db.Column(db.Integer)
     message_count = db.Column(db.Integer)
 
-    # Lets us print out a User object nicely
+    # Allows us to print out a User object nicely
     def __repr__(self):
         text = ("<User(name='{self.name}', discord_id='{self.discord_id}',"
             "level='{self.level}', experience='{self.experience}',"
@@ -73,6 +73,7 @@ def update_user(id: str, name: str = None, lvl: int = None,
                 exp: int = None, msg_count: int = None):
     '''
     Updates user data in the database.
+    All the other parameters besides 'id' are optional.
     '''
     session = Session()
     if user_exists(id):
@@ -95,8 +96,22 @@ def update_user(id: str, name: str = None, lvl: int = None,
         return
     print("User was not found.")
 
-def delete_user():
-    pass
+def delete_user(id):
+    '''
+    Deletes a user from the database.
+    '''
+    session = Session()
+    if user_exists(id):
+        query = session.query(User).filter(
+            User.discord_id == id).scalar()
+        session.delete(query)
+        session.commit()
+        print(
+            f"User with the discord_id of {id} has been deleted from the "
+            "database."
+        )  
+        return
+    print(f"User {id} was not found.")
 
 def user_exists(id):
     '''
@@ -115,17 +130,21 @@ def user_exists(id):
 
 def get_user(id):
     '''
-    Retrieves data about a user. Returns a User object.
+    Retrieves data about a user from database.
+    Returns a dict containing user information.
     '''
     session = Session()
     if user_exists(id):
         user = session.query(User).filter(
             User.discord_id == id).scalar()
-        return user
+        return {"name": user.name, "discord_id": user.discord_id,
+                "level": user.level, "experience": user.experience,
+                "message_count": user.message_count}
     print("User was not found.")
 
 def get_all_users():
     '''
+    Retrieves data about every user.
     Returns an array of tuples with every user's data.
     '''
     user_table = db.Table(
@@ -141,6 +160,9 @@ def get_user_count():
     '''
     session = Session()
     return session.query(User).count()
+
+def reset_table_index():
+    pass
 
 def check_duplicates():
     '''

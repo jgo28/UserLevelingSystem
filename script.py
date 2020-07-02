@@ -15,10 +15,7 @@ Retrieving user data
 # print(m.get_all_users())
 # print(m.get_user_count())
 user = m.get_user("9211011")
-print(
-    f"{user.name}, {user.discord_id}, {user.level}, "
-    f"{user.experience}, {user.message_count}"
-)
+print(user)
 
 '''
 Update user information
@@ -29,3 +26,8 @@ Update user information
 # m.update_user("76565623", msg_count=40)
 # m.update_user("dfg", lvl=4, msg_count=430)
 # m.update_user("921010", lvl=16, msg_count=2345, exp=35789, name="notaly")
+
+'''
+Delete user data
+'''
+m.delete_user("921010")
