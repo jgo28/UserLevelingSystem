@@ -87,6 +87,18 @@ class Methods:
             return
         print(f"Users {id} was not found.")
 
+    def delete_all(self):
+        '''
+        Deletes all the users from the database.
+        '''
+        session = self.session()
+        if self.get_user_count() == 0:
+            print("Table is already empty!")
+            return
+        session.query(Users).delete()
+        session.commit()
+        print("All the users in the table have been deleted.")
+
     def user_exists(self, id):
         '''
         Checks to see if a user exists based on their discord_id.
