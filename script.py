@@ -1,9 +1,9 @@
 import utils.database.methods as methods
-import utils.database.config as i
+import utils.database.config as config
 
-metadata = i.get_metadata()
-engine = i.get_engine()
-connection = i.get_connection()
+metadata = config.get_metadata()
+engine = config.get_engine()
+connection = config.get_connection()
 db = methods.Methods(engine, metadata, connection)
 
 '''
@@ -37,3 +37,6 @@ db.update_user("921010", lvl=16, msg_count=2345, exp=35789, name="notaly")
 Delete user data
 '''
 db.delete_user("921010")
+db.delete_all()
+print(db.get_user_count())
+db.delete_all()
