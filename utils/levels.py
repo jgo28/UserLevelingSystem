@@ -7,22 +7,22 @@ connection = config.get_connection()
 db = methods.Methods(engine, metadata, connection)
 
 exp_mod = 1   # experience point modifier; progession speed through the system
-exp_gain = 10   # experience points gained per message
+exp_gain = 15   # experience points gained per message
 
 # Defines the message requirements for each level. Each element is the number of
 # messages for that level. Each level is represented by an element in the array.
 # 10 levels in each row of the list.
 msg_list = [
         5, 5, 10, 10, 10, 20, 20, 20, 20, 20,
-        30, 30, 30, 30, 30, 40, 40, 40, 40, 40,
-        40, 40, 50, 50, 50, 50, 50, 50, 50, 50,
+        30, 30, 30, 30, 30, 30, 30, 30, 40, 40,
+        40, 40, 40, 40, 40, 50, 50, 50, 50, 50,
         50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
         60, 60, 60, 60, 60, 60, 60, 60, 60, 60,
         70, 70, 70, 80, 80, 80, 80, 90, 90, 90,
-        100, 100, 100, 100, 200, 200, 200, 200, 200, 200,
-        250, 250, 250, 250, 250, 250, 250, 250, 250, 250,
-        500, 500, 500, 500, 500, 500, 500, 1000, 1000, 1000,
-        1000, 1000, 1000, 1000, 2000, 2000, 2000, 2000, 5000, 5000
+        100, 100, 100, 100, 100, 100, 100, 100, 200, 200,
+        200, 200, 200, 200, 200, 200, 250, 250, 250, 500,
+        500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
+        1000, 1000, 1000, 1000, 1000, 2000, 2000, 2000, 2000, 5000
     ]
 
 # Generates the experience requirements for each level. Takes the exp_gain
