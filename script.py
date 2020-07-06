@@ -1,5 +1,6 @@
 import utils.database.methods as methods
 import utils.database.config as config
+import utils.levels as levels
 
 metadata = config.get_metadata()
 engine = config.get_engine()
@@ -40,3 +41,9 @@ db.delete_user("921010")
 db.delete_all()
 print(db.get_user_count())
 db.delete_all()
+
+'''
+Leveling System
+'''
+print(levels.max_exp())
+print(levels.max_msgs())
