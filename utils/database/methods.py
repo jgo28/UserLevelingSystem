@@ -68,7 +68,7 @@ class Methods:
                             f"has been updated to {var}."
                         )
             return
-        print("Users was not found.")
+        print("User was not found.")
 
     def delete_user(self, id):
         '''
@@ -85,7 +85,7 @@ class Methods:
                 "database."
             )
             return
-        print(f"Users {id} was not found.")
+        print(f"User {id} was not found.")
 
     def delete_all(self):
         '''
@@ -129,7 +129,7 @@ class Methods:
             return {"name": user.name, "discord_id": user.discord_id,
                     "level": user.level, "experience": user.experience,
                     "message_count": user.message_count}
-        print("Users was not found.")
+        print("User was not found.")
 
     def get_all_users(self):
         '''
