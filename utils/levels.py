@@ -28,7 +28,7 @@ msg_list = [
 # Generates the experience requirements for each level. Takes the exp_gain
 # per message and the exp_mod and multiples it by each element in the message
 # requirements list.
-exp_list = [i * exp_gain * exp_mod for i in msg_list]
+exp_list = [i * exp_gain for i in msg_list]
 
 # Generates the experience requirements to achieve a level at that point
 # in time.
