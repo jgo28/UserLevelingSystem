@@ -10,20 +10,20 @@ data = methods.Methods(engine, metadata, connection)
 '''
 Adding new users
 '''
-# data.add_user("921010", "aly", 0, 0, 0)
-# data.add_user("9210310", "jake", 0, 0, 0)
-# data.add_user("9211011", "sda", 0, 0, 0)
-# data.add_user("92102343", "asw", 0, 0, 0)
-# data.add_user("76565623", "wyh", 0, 0, 0)
+# data.add_user("921010", "aly", 1, 0, 0)
+# data.add_user("9210310", "jake", 1, 0, 0)
+# data.add_user("9211011", "sda", 1, 0, 0)
+# data.add_user("92102343", "asw", 1, 0, 0)
+# data.add_user("76565623", "wyh", 1, 0, 0)
 
 '''
 Retrieving user data
 '''
-print(data.get_all_users())
+# print(data.get_all_users())
 # print(data.get_user_count())
-print(data.user_exists("921010"))
-user = data.get_user("921010")
-print(user)
+# print(data.user_exists("921010"))
+# user = data.get_user("921010")
+# print(user)
 
 '''
 Update user information
@@ -41,7 +41,7 @@ Leveling System
 print(levels.get_max_exp())
 print(levels.get_max_msgs())
 print(levels.max_level)
-levels.add_experience("921010", levels.get_user_exp("921010"))
+levels.msg_sent(data.get_user("921010"))
 
 '''
 Delete user data

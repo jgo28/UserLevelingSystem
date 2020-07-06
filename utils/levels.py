@@ -14,15 +14,15 @@ exp_gain = 10   # experience points gained per message
 # 10 levels in each row of the list.
 msg_list = [
         5, 5, 10, 10, 10, 20, 20, 20, 20, 20,
-        20, 20, 20, 30, 30, 30, 30, 30, 30, 30,
-        40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+        30, 30, 30, 30, 30, 40, 40, 40, 40, 40,
+        40, 40, 50, 50, 50, 50, 50, 50, 50, 50,
         50, 50, 50, 50, 50, 50, 50, 50, 50, 50,
-        50, 50, 50, 60, 60, 60, 60, 60, 60, 60,
+        60, 60, 60, 60, 60, 60, 60, 60, 60, 60,
         70, 70, 70, 80, 80, 80, 80, 90, 90, 90,
         100, 100, 100, 100, 200, 200, 200, 200, 200, 200,
         250, 250, 250, 250, 250, 250, 250, 250, 250, 250,
-        500, 500, 500, 500, 500, 500, 500, 500, 500, 500,
-        1000, 1000, 1000, 1000, 1000, 1000, 1000, 2000, 2000, 5000
+        500, 500, 500, 500, 500, 500, 500, 1000, 1000, 1000,
+        1000, 1000, 1000, 1000, 2000, 2000, 2000, 2000, 5000, 5000
     ]
 
 # Generates the experience requirements for each level. Takes the exp_gain
@@ -44,11 +44,18 @@ max_level = len(msg_list)
 
 
 def msg_sent(user):
+    '''
+    Each time a user sends a message, reward them with experience points.
+    If the user reaches a certain threshold of points, their level increases.
+    '''
     d_id = user.get("discord_id")
     exp = user.get("experience")
     lvl = user.get("level")
-    add_experience(d_id, exp)
-    if ready_to_level(lvl, exp) and is not is_max_lvl(d_id):
+    msgs = user.get("message_count")
+    add_msg_count(d_id, msgs)
+    if not is_max_exp(d_id):
+        add_experience(d_id, exp)
+    if ready_to_level(lvl, exp) and not is_max_lvl(d_id):
         add_level(d_id, lvl)
 
 
@@ -62,20 +69,27 @@ def add_experience(discord_id, exp):
     elif exp == max_exp:
         return
     db.update_user(discord_id, exp = exp)
-    print(f"User: {discord_id} gained {exp_gain * exp_mod} experience points.")
 
 
 def add_level(discord_id, level):
+    '''Increases the user's level by 1 in the database.'''
     if level < max_level: 
         level = level + 1
         db.update_user(discord_id, lvl = level)
-        print(f"User: {discord_id} is now level {level}.")
+
+
+def add_msg_count(discord_id, msgs):
+    '''Increments the user's message count by 1 in the database.'''
+    msgs = msgs + 1
+    db.update_user(discord_id, msg_count = msgs)
 
 
 def ready_to_level(level, exp):
     '''
     Checks if the user has met the experience requirements for the next level.
     '''
+    print(exp)
+    print(exp_req[level-1])
     if exp >= exp_req[level-1]:
         return True
     return False
@@ -91,7 +105,7 @@ def get_user_lvl(discord_id):
     return user.get("level")
 
 
-def get_user_msg_cnt(discord_id):
+def get_user_msgs(discord_id):
     user = db.get_user(discord_id)
     return user.get("message_count")
 
@@ -117,30 +131,35 @@ def is_max_lvl(discord_id):
 
 
 def is_max_exp(discord_id):
-    '''Checks to see it user has hit max experience.'''
+    '''Checks to see if user has hit max experience.'''
     cur_exp = get_user_exp(discord_id)
     if cur_exp == get_max_exp():
         return True
     return False
 
 
+def is_max_msgs(discord_id):
+    '''Checks to see if user has hit the max amount of messages.'''
+    cur_msgs = get_user_msgs(discord_id)
+    if cur_msgs == get_max_msgs():
+        return True
+    return False
+
+
 def reset_stats(discord_id):
-    db.update_user(discord_id, lvl = 0, exp = 0, msg_count = 0)
-    print(f"Reset user: {discord_id} stats to 0.")
+    db.update_user(discord_id, lvl = 1, exp = 0, msg_count = 0)
+    print(f"Reset user: {discord_id} stats.")
 
 
-def reset_exp(discord_id):
-    '''Resets experience back to 0.'''
-    db.update_user(discord_id, exp = 0)
-    print(f"Reset user: {discord_id} experience to 0.")
+def set_exp(discord_id, xp):
+    '''Sets a user's experience points.'''
+    db.update_user(discord_id, exp = xp)
 
 
-def reset_level(discord_id):
-    '''Resets level back to 0.'''
-    db.update_user(discord_id, lvl = 0)
-    print(f"Reset user: {discord_id} level to 0.")
+def set_level(discord_id, level):
+    '''Set a user's level.'''
+    db.update_user(discord_id, lvl = level)
 
 
-def reset_msg_count(discord_id):
-    db.update_user(discord_id, msg_count = 0)
-    print(f"Reset user: {discord_id} message count to 0.")
+def set_msg_count(discord_id, msgs):
+    db.update_user(discord_id, msg_count = msgs)
