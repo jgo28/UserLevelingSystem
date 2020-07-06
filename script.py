@@ -47,3 +47,4 @@ Leveling System
 '''
 print(levels.max_exp())
 print(levels.max_msgs())
+print(levels.max_level)
