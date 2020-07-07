@@ -1,4 +1,4 @@
-# User Leveling System
+# Basic User Leveling System
 
 This package creates a basic leveling system that monitors and grants users experience
 points based on the number of message they send in a server. This package is
